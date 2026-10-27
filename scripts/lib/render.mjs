@@ -29,7 +29,7 @@ export function table(rows, columns = null) {
 export function record(row, columns = null) {
   if (!row) return '<p class="empty">Nothing here.</p>';
   const keys = columns || Object.keys(row);
-  return '<dl class="record-grid">' + keys.map((key) => `<div><dt>${esc(key.replace(/_/g, ' '))}</dt><dd>${esc(fmt(row[key], key, row))}</dd></div>`).join('') + '</dl>';
+  return '<dl class="record-grid">' + keys.map((key) => `<div><dt>${esc(key.replace(/_cents$/, '').replace(/_bps$/, ' %').replace(/_/g, ' '))}</dt><dd>${esc(fmt(row[key], key, row))}</dd></div>`).join('') + '</dl>';
 }
 
 function fmt(v, key, row) {

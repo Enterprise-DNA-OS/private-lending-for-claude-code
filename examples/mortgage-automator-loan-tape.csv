@@ -1,0 +1,4 @@
+Loan Number,Borrower,Loan Type,Loan Status,Loan Amount,Principal Balance,Interest Rate,Funding Date,Maturity Date,Interest Paid To,Property Address,Lien Position,Appraised Value,Appraisal Date
+MA-2041,Kowhai Lane Partners Ltd,Bridge,Active,"$480,000.00","$480,000.00",11.75%,03/02/2026,03/02/2027,30/09/2026,"17 Kowhai Lane, Taupo",1st,"$760,000.00",20/01/2026
+MA-2042,Westgate Builders Ltd,Construction,Active,"$1,900,000.00","$1,150,000.00",12.25%,15/04/2026,15/10/2027,30/09/2026,"88 Westgate Drive, Hamilton",1st,"$2,950,000.00",01/04/2026
+MA-2043,Ridgeline Storage Ltd,Term,Paid Off,"$300,000.00",$0.00,10.50%,01/06/2025,01/06/2026,01/06/2026,"5 Quarry Lane, Rolleston",1st,"$900,000.00",15/05/2025

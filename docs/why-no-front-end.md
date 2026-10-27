@@ -1,24 +1,21 @@
 # Why there is no front end
 
-Mortgage Automator is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+A lending desk runs on a handful of records: borrowers, loans, securities, a ledger of draws, interest and payments, investors and their allocations, and the conditions on each loan. The weekly work is a set of questions about those records. Who is behind? What matures next month? Which loan is over its LVR? Which draw went out without a surveyor's report?
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+Here you ask those questions in plain words and Claude Code runs the command, reads the answer and drafts the letter. `npm run view` prints the week, the book and the evidence review as read-only pages in your brand. `npm run docs` prints loan statements, overdue letters, investor statements and credit summaries.
 
-## What you gain
+## What a screen gives you that this does not
 
-- **Better answers.** A dashboard shows what the vendor decided to chart. Here you ask your own question, in your own words, and get it answered against your own data.
-- **No seats.** Everyone who needs to look can look. The bill does not grow with headcount.
-- **Your data in your Postgres.** Plain tables. Back them up, query them from anything, leave any time. There is no export step because there is nothing to leave.
-- **A process that matches you.** When your way of working changes, you add a command. You do not wait for a feature request to clear.
+- **Borrower and investor portals.** Borrowers cannot log in to see their balance, and investors cannot download their own statements. Statements are generated for you to send.
+- **Payments.** Nothing here collects direct debits or pays investors. Payments are recorded after your bank moves the money.
+- **A phone app and drag and drop.** It runs where Claude Code runs, on a laptop or a server.
+- **Document storage and e-signing.** Store loan documents where you keep them today. Record the reference.
+- **Trust accounting and tax.** Keep your accountant's ledger and your trustee's records. This desk is the loan register beside them.
 
-## What you give up
-
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
-- **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
+Enterprise DNA builds whichever of these a lender needs into their own version: a borrower or investor portal, bank feed matching, document links, or a web front end over the same database.
 
 ## Who this fits
 
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep Mortgage Automator. If you need the answers more than the screens, this is cheaper, faster and yours.
+A private lender or mortgage fund with a small team that wants its loan book, its rules and its history in one database it owns, and would rather ask than click.
 
 Installed and run for you: https://enterprisedna.co/omni/instead-of/mortgage-automator

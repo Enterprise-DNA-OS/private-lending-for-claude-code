@@ -1,11 +1,13 @@
 ---
-description: Check the records against the rules this industry lives under (the ones listed in docs/compliance.md) and report what is missing, late, or about to breach, with the rule cited.
+description: "Check the loan book against the rules in docs/compliance.md and report each evidence gap with its source."
 ---
 
-1. Read `docs/compliance.md`. Each rule has a name, the source it comes from, what a breach looks like in the data, and the SQL or command that finds it.
-2. Run each check. Use the CLI's `--json` output or a direct query through `scripts/lib/db.mjs`.
-3. Report as a table: rule, count, the worst example (name and days), the source. Order by severity: breached first, then due within 7 days, then clean.
-4. For anything breached, draft the fix the operator can approve: the record to update, the notice to send (draft to `drafts/`, never send), or the task to add.
-5. If a rule in `docs/compliance.md` is out of date, say so and stop. Do not guess at law. The operator confirms the rule, then you update the doc and the check together.
+# compliance
 
-Nothing here is legal advice. The doc records the rules the operator has told the system to enforce, with sources, and this command checks the data against them.
+1. Read `docs/compliance.md`. Each rule has a code, its source and what the check looks for.
+2. Run `node scripts/lending.mjs compliance` (add `--json` if you need to work with the rows).
+3. Report as a table: rule, record, the gap, the source. Order: identity and business purpose first, then valuation and LVR, then investor certificates.
+4. For each gap, say the command that records the missing evidence (`verify-kyc`, `declare-purpose`, `value`, `certify-investor`) and ask the operator for the facts. Never invent a date or a value.
+5. If a rule in `docs/compliance.md` looks out of date, say so and stop. The operator confirms the rule, then you update the doc and the check together.
+
+This is a check of the records against rules the operator has chosen. It is not legal advice and not a compliance certificate.

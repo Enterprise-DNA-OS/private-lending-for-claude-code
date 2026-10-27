@@ -1,11 +1,43 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "loan-statement",
+    "title": "Loan statement",
+    "for_each": "select id,code from loans where status in ('settled','default','discharged') order by code",
+    "file": "code",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Loan", "layout": "record", "sql": "select code,borrower,purpose,status,currency,limit_cents,balance_cents,rate_bps,settled_on,maturity_on,interest_to from v_loans where id=$1" },
+      { "title": "Transactions", "sql": "select posted_on,kind,case when kind='payment' then -amount_cents else amount_cents end amount_cents,sum(case when kind='payment' then -amount_cents else amount_cents end) over (order by posted_on,created_at,id) balance_cents,note from ledger where loan_id=$1 order by posted_on,created_at,id", "note": "Interest is charged on an actual/365 basis." }
+    ]
+  },
+  {
+    "name": "arrears-letter",
+    "title": "Overdue payment",
+    "for_each": "select l.id,l.code from v_loans l where l.arrears_cents>0 and l.status in ('settled','default') order by l.code",
+    "file": "code",
+    "sections": [
+      { "title": "Amount overdue", "layout": "record", "sql": "select code loan,borrower,arrears_cents,oldest_unpaid_on,days_in_arrears,last_payment_on,manager from v_loans where id=$1", "note": "Please pay the overdue amount or contact your loan manager this week to agree a date. Internal draft: not a formal demand or default notice." },
+      { "title": "Unpaid charges", "sql": "select posted_on,kind,amount_cents,note from ledger where loan_id=$1 and kind in ('interest','fee') and posted_on>=(select oldest_unpaid_on from v_loans where id=$1) order by posted_on" }
+    ]
+  },
+  {
+    "name": "investor-statement",
+    "title": "Investor statement",
+    "for_each": "select i.id,i.code from investors i where exists (select 1 from allocations a where a.investor_id=i.id) order by i.code",
+    "file": "code",
+    "sections": [
+      { "title": "Investor", "layout": "record", "sql": "select code,name,investor_type,certificate_on from investors where id=$1" },
+      { "title": "Allocations and last calendar month's interest", "sql": "select a.code,l.code loan,l.borrower,l.status,a.amount_cents,a.investor_rate_bps,round(a.amount_cents*a.investor_rate_bps/10000.0*(date_trunc('month',current_date)::date-greatest(a.allocated_on,(date_trunc('month',current_date)-interval '1 month')::date))/365)::bigint interest_cents from allocations a join v_loans l on l.id=a.loan_id where a.investor_id=$1 order by a.code", "note": "Interest at the agreed investor rate, actual/365, for last calendar month. Loans in arrears or default need a decision before distribution." }
+    ]
+  },
+  {
+    "name": "credit-summary",
+    "title": "Credit summary",
+    "for_each": "select id,code from loans where status in ('application','approved') order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Proposal", "layout": "record", "sql": "select code,borrower,purpose,loan_type,limit_cents,rate_bps,repayment,max_lvr_bps,committed_lvr_bps,benchmark_lvr_bps,business_purpose_on,borrower_kyc_on from v_loans where id=$1" },
+      { "title": "Security", "sql": "select code,address,security_type,market_value_cents,complete_value_cents,valued_on,valuer,valuer_independent from securities where loan_id=$1 order by code" },
+      { "title": "Conditions", "sql": "select code,title,owner,due_on,met_on from conditions where loan_id=$1 order by due_on" }
     ]
   }
 ]

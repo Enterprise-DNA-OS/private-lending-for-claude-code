@@ -1,14 +1,31 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Private Lending for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Lending desk week",
+    "subtitle": "Arrears, maturities and everything waiting on a decision.",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Arrears", "sql": "select code,borrower,status,balance_cents,arrears_cents,oldest_unpaid_on,days_in_arrears,last_payment_on,manager from v_arrears order by days_in_arrears desc" },
+      { "title": "Maturing within 90 days", "sql": "select code,borrower,loan_type,maturity_on,days_to_maturity,balance_cents,manager from v_maturities order by maturity_on" },
+      { "title": "Needs attention", "sql": "select code,issue,due_on,detail from v_attention order by due_on,code" }
+    ]
+  },
+  {
+    "name": "book",
+    "title": "Loan book",
+    "subtitle": "Balances, rates and LVR across every live loan.",
+    "sections": [
+      { "title": "By status", "sql": "select status,count(*)::int loans,sum(limit_cents)::bigint limit_cents,sum(balance_cents)::bigint balance_cents from v_loans group by status order by status" },
+      { "title": "Live loans", "sql": "select code,borrower,loan_type,limit_cents,balance_cents,rate_bps,committed_lvr_bps,current_lvr_bps,max_lvr_bps,maturity_on from v_loans where status in ('approved','settled','default') order by code" },
+      { "title": "Investor funding", "sql": "select code,borrower,drawn_cents,allocated_cents,unfunded_cents,investors from v_investor_funding order by unfunded_cents desc", "note": "Unfunded is the part drawn beyond what investors have taken up." }
+    ]
+  },
+  {
+    "name": "evidence",
+    "title": "Evidence review",
+    "sections": [
+      { "title": "Evidence gaps", "sql": "select code,rule,issue,subject from v_compliance order by rule,code", "note": "Record checks against the rules in docs/compliance.md. Not legal advice and not a compliance certificate." },
+      { "title": "Securities", "sql": "select code,loan,address,market_value_cents,complete_value_cents,valued_on,age_days,valuer,valuer_independent,insurance_expires_on from v_valuations order by valued_on" },
+      { "title": "Open loan conditions", "sql": "select code,loan,borrower,title,owner,due_on,days_overdue from v_conditions order by due_on" }
     ]
   }
 ]
